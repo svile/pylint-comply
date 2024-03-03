@@ -1,0 +1,21 @@
+name: Release
+
+on:
+  push:
+    # Trigger on any tag
+    tags: [ '*' ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+      - uses: abatilo/actions-poetry@v2
+      - run: poetry install
+      - run: poetry version ${{ github.ref_name }}
+      - run: poetry build
+      - run: poetry publish
+        env:
+          POETRY_HTTP_BASIC_PYPI_USERNAME: ${{ secrets.POETRY_HTTP_BASIC_PYPI_USERNAME }}
+          POETRY_HTTP_BASIC_PYPI_PASSWORD: ${{ secrets.POETRY_HTTP_BASIC_PYPI_PASSWORD }}
